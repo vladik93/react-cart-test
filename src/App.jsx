@@ -5,49 +5,43 @@ import products from "./products";
 export default function App() {
   const [cart, setCart] = useState([]);
 
-  const addToCart = (item) => {
-    setCart((prevState) => [...prevState, item]);
-  };
+  // const addToCart = (item) => {
+
+  // };
 
   useEffect(() => {
     console.log(cart);
   }, [cart]);
 
-  const Product = ({ id, title, cost, amountInStock }) => {
+  const Product = ({ id, title, cost, amountInStock, addToCart }) => {
     const [quantity, setQuantity] = useState(0);
+    const [selectedItem, setSelectedItem] = useState(null);
 
     const onIncrement = () => {
-      setQuantity((prevState) => {
-        if (prevState < amountInStock) {
-          return prevState + 1;
-        } else {
-          return prevState;
-        }
-      });
+      if (amountInStock > quantity) {
+        setQuantity((prevState) => prevState + 1);
+      }
     };
 
-    const onDecrement = () => {
-      setQuantity((prevState) => {
-        if (prevState > 0) {
-          return prevState - 1;
-        } else {
-          return prevState;
-        }
-      });
-    };
+    const onDecrement = () => {};
 
-    const handleAddToCart = () => {
-      let item = {
-        id,
-        title,
-        cost,
-        quantity,
-      };
+    const handleQuantityUpdate = () => {
+      if (quantity > 0) {
+        setSelectedItem((prevState) => {
+          return { ...prevState, quantity: quantity };
+        });
+      } else {
+        setSelectedItem({ id, title, cost, quantity });
+      }
     };
 
     useEffect(() => {
-      handleAddToCart();
+      handleQuantityUpdate();
     }, [quantity]);
+
+    useEffect(() => {
+      addToCart(selectedItem);
+    }, [selectedItem]);
 
     return (
       <div className="product">
@@ -102,15 +96,7 @@ export default function App() {
 
       <div>
         <h1>My Cart</h1>
-        <ul>
-          {cart.map((cartItem) => {
-            return (
-              <li>
-                {cartItem.title} {cartItem.quantity}
-              </li>
-            );
-          })}
-        </ul>
+        <ul></ul>
       </div>
     </div>
   );
